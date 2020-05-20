@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+
+<html lang="ENglish">
+  <head>
+    <meta charset="utf-8" />
+    <title>Snakemake &#8212; testing-sphinx 2020 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="snakemake">
+<span id="manual-main"></span><h1>Snakemake<a class="headerlink" href="#snakemake" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://bioconda.github.io/recipes/snakemake/README.html"><img alt="https://img.shields.io/conda/dn/bioconda/snakemake.svg?label=Bioconda" src="https://img.shields.io/conda/dn/bioconda/snakemake.svg?label=Bioconda" /></a>
+<a class="reference external image-reference" href="https://www.python.org"><img alt="https://img.shields.io/pypi/pyversions/snakemake.svg" src="https://img.shields.io/pypi/pyversions/snakemake.svg" /></a>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/snakemake"><img alt="https://img.shields.io/pypi/v/snakemake.svg" src="https://img.shields.io/pypi/v/snakemake.svg" /></a>
+<a class="reference external image-reference" href="https://hub.docker.com/r/snakemake/snakemake"><img alt="https://img.shields.io/docker/cloud/build/snakemake/snakemake" src="https://img.shields.io/docker/cloud/build/snakemake/snakemake" /></a>
+<a class="reference external image-reference" href="https://github.com/snakemake/snakemake/actions?query=branch%3Amaster+workflow%3ACI"><img alt="https://github.com/snakemake/snakemake/workflows/CI/badge.svg?branch=master" src="https://github.com/snakemake/snakemake/workflows/CI/badge.svg?branch=master" /></a>
+<a class="reference external image-reference" href="https://stackoverflow.com/questions/tagged/snakemake"><img alt="https://img.shields.io/badge/stack-overflow-orange.svg" src="https://img.shields.io/badge/stack-overflow-orange.svg" /></a>
+<a class="reference external image-reference" href="https://twitter.com/search?l=&amp;q=%23snakemake%20from%3Ajohanneskoester"><img alt="https://img.shields.io/twitter/follow/johanneskoester.svg?style=social&amp;label=Follow" src="https://img.shields.io/twitter/follow/johanneskoester.svg?style=social&amp;label=Follow" /></a>
+<a class="reference external image-reference" href="https://github.com/snakemake/snakemake/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/snakemake/snakemake?style=social" /></a>
+<p>The Snakemake workflow management system is a tool to create <strong>reproducible and scalable</strong> data analyses.
+Workflows are described via a human readable, Python based language.
+They can be seamlessly scaled to server, cluster, grid and cloud environments, without the need to modify the workflow definition.
+Finally, Snakemake workflows can entail a description of required software, which will be automatically deployed to any execution environment.</p>
+<p>Snakemake is <strong>highly popular</strong> with, <a class="reference external" href="https://badge.dimensions.ai/details/id/pub.1018944052">~3 new citations per week</a>.</p>
+<div class="section" id="quick-example">
+<span id="manual-quick-example"></span><h2>Quick Example<a class="headerlink" href="#quick-example" title="Permalink to this headline">¶</a></h2>
+<p>Snakemake workflows are essentially Python scripts extended by declarative code to define <strong>rules</strong>.
+Rules describe how to create <strong>output files</strong> from <strong>input files</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rule</span> <span class="n">targets</span><span class="p">:</span>
+    <span class="nb">input</span><span class="p">:</span>
+        <span class="s2">&quot;plots/myplot.pdf&quot;</span>
+
+<span class="n">rule</span> <span class="n">transform</span><span class="p">:</span>
+    <span class="nb">input</span><span class="p">:</span>
+        <span class="s2">&quot;raw/</span><span class="si">{dataset}</span><span class="s2">.csv&quot;</span>
+    <span class="n">output</span><span class="p">:</span>
+        <span class="s2">&quot;transformed/</span><span class="si">{dataset}</span><span class="s2">.csv&quot;</span>
+    <span class="n">singularity</span><span class="p">:</span>
+        <span class="s2">&quot;docker://somecontainer:v1.0&quot;</span>
+    <span class="n">shell</span><span class="p">:</span>
+        <span class="s2">&quot;somecommand </span><span class="si">{input}</span><span class="s2"> </span><span class="si">{output}</span><span class="s2">&quot;</span>
+
+<span class="n">rule</span> <span class="n">aggregate_and_plot</span><span class="p">:</span>
+    <span class="nb">input</span><span class="p">:</span>
+        <span class="n">expand</span><span class="p">(</span><span class="s2">&quot;transformed/</span><span class="si">{dataset}</span><span class="s2">.csv&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="n">output</span><span class="p">:</span>
+        <span class="s2">&quot;plots/myplot.pdf&quot;</span>
+    <span class="n">conda</span><span class="p">:</span>
+        <span class="s2">&quot;envs/matplotlib.yaml&quot;</span>
+    <span class="n">script</span><span class="p">:</span>
+        <span class="s2">&quot;scripts/plot.py&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Similar to GNU Make, you specify targets in terms of a pseudo-rule at the top.</p></li>
+<li><p>For each target and intermediate file, you create rules that define how they are created from input files.</p></li>
+<li><p>Snakemake determines the rule dependencies by matching file names.</p></li>
+<li><p>Input and output files can contain multiple named wildcards.</p></li>
+<li><p>Rules can either use shell commands, plain Python code or external Python or R scripts to create output files from input files.</p></li>
+<li><p>Snakemake workflows can be easily executed on <strong>workstations</strong>, <strong>clusters</strong>, <strong>the grid</strong>, and <strong>in the cloud</strong> without modification. The job scheduling can be constrained by arbitrary resources like e.g. available CPU cores, memory or GPUs.</p></li>
+<li><p>Snakemake can automatically deploy required software dependencies of a workflow using <a class="reference external" href="https://conda.io">Conda</a> or <a class="reference external" href="https://sylabs.io/docs/">Singularity</a>.</p></li>
+<li><p>Snakemake can use Amazon S3, Google Storage, Dropbox, FTP, WebDAV, SFTP and iRODS to access input or output files and further access input files via HTTP and HTTPS.</p></li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<span id="main-getting-started"></span><h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>To get a first impression, see our <a class="reference external" href="https://slides.com/johanneskoester/snakemake-short">introductory slides</a> or watch the <a class="reference external" href="https://youtu.be/hPrXcUUp70Y">live demo video</a>.
+News about Snakemake are published via <a class="reference external" href="https://twitter.com/search?l=&amp;q=%23snakemake%20from%3Ajohanneskoester">Twitter</a>.
+To learn Snakemake, please do the <span class="xref std std-ref">tutorial</span>, and see the <span class="xref std std-ref">FAQ</span>.</p>
+</div>
+<div class="section" id="support">
+<span id="main-support"></span><h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>For releases, see <span class="xref std std-ref">Changelog</span>.</p></li>
+<li><p>Check <span class="xref std std-ref">frequently asked questions (FAQ)</span>.</p></li>
+<li><p>In case of questions, please post on <a class="reference external" href="https://stackoverflow.com/questions/tagged/snakemake">stack overflow</a>.</p></li>
+<li><p>To discuss with other Snakemake users, you can use the <a class="reference external" href="https://groups.google.com/forum/#!forum/snakemake">mailing list</a>. <strong>Please do not post questions there. Use stack overflow for questions.</strong></p></li>
+<li><p>For bugs and feature requests, please use the <a class="reference external" href="https://github.com/snakemake/snakemake/issues">issue tracker</a>.</p></li>
+<li><p>For contributions, visit Snakemake on <a class="reference external" href="https://github.com/snakemake/snakemake">Github</a> and read the <span class="xref std std-ref">guidelines</span>.</p></li>
+</ul>
+</div>
+<div class="section" id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://bioinformatics.oxfordjournals.org/content/28/19/2520">Köster, Johannes and Rahmann, Sven. &quot;Snakemake - A scalable bioinformatics workflow engine&quot;. Bioinformatics 2012.</a></p>
+<p>See <span class="xref std std-doc">Citations</span> for more information.</p>
+</div>
+<div class="section" id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt><a class="reference external" href="https://snakemake-wrappers.readthedocs.org">Snakemake Wrappers Repository</a></dt><dd><p>The Snakemake Wrapper Repository is a collection of reusable wrappers that allow to quickly use popular tools from Snakemake rules and workflows.</p>
+</dd>
+<dt><a class="reference external" href="https://github.com/snakemake-workflows/docs">Snakemake Workflows Project</a></dt><dd><p>This project provides a collection of high quality modularized and re-usable workflows.
+The provided code should also serve as a best-practices of how to build production ready workflows with Snakemake.
+Everybody is invited to contribute.</p>
+</dd>
+<dt><a class="reference external" href="https://github.com/snakemake-profiles/doc">Snakemake Profiles Project</a></dt><dd><p>This project provides Snakemake configuration profiles for various execution environments.
+Please consider contributing your own if it is still missing.</p>
+</dd>
+<dt><a class="reference external" href="https://bioconda.github.io/">Bioconda</a></dt><dd><p>Bioconda can be used from Snakemake for creating completely reproducible workflows by defining the used software versions and providing binaries.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="publications-using-snakemake">
+<h2>Publications using Snakemake<a class="headerlink" href="#publications-using-snakemake" title="Permalink to this headline">¶</a></h2>
+<p>In the following you find an <strong>incomplete list</strong> of publications making use of Snakemake for their analyses.
+Please consider to add your own.</p>
+<ul class="simple">
+<li><p>Kuzniar et al. 2020. <a class="reference external" href="https://doi.org/10.7717/peerj.8214">sv-callers: a highly portable parallel workflow for structural variant detection in whole-genome sequence data</a>. PeerJ.</p></li>
+<li><p>Doris et al. 2018. <a class="reference external" href="https://doi.org/10.1016/j.molcel.2018.09.005">Spt6 is required for the fidelity of promoter selection</a>. Molecular Cell.</p></li>
+<li><p>Karlsson et al. 2018. <a class="reference external" href="https://www.nature.com/articles/s41588-018-0131-y">Four evolutionary trajectories underlie genetic intratumoral variation in childhood cancer</a>. Nature Genetics.</p></li>
+<li><p>Planchard et al. 2018. <a class="reference external" href="https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gky489/5033161">The translational landscape of Arabidopsis mitochondria</a>. Nucleic acids research.</p></li>
+<li><p>Schult et al. 2018. <a class="reference external" href="https://academic.oup.com/nar/article/46/14/7179/5047281">Effect of UV irradiation on Sulfolobus acidocaldarius and involvement of the general transcription factor TFB3 in the early UV response</a>. Nucleic acids research.</p></li>
+<li><p>Goormaghtigh et al. 2018. <a class="reference external" href="https://mbio.asm.org/content/mbio/9/3/e00640-18.full.pdf">Reassessing the Role of Type II Toxin-Antitoxin Systems in Formation of Escherichia coli Type II Persister Cells</a>. mBio.</p></li>
+<li><p>Ramirez et al. 2018. <a class="reference external" href="https://www.nature.com/articles/s41564-017-0062-x">Detecting macroecological patterns in bacterial communities across independent studies of global soils</a>. Nature microbiology.</p></li>
+<li><p>Amato et al. 2018. <a class="reference external" href="https://www.nature.com/articles/s41396-018-0175-0">Evolutionary trends in host physiology outweigh dietary niche in structuring primate gut microbiomes</a>. The ISME journal.</p></li>
+<li><p>Uhlitz et al. 2017. <a class="reference external" href="https://msb.embopress.org/content/13/5/928">An immediate–late gene expression module decodes ERK signal duration</a>. Molecular Systems Biology.</p></li>
+<li><p>Akkouche et al. 2017. <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S1097276517302071">Piwi Is Required during Drosophila Embryogenesis to License Dual-Strand piRNA Clusters for Transposon Repression in Adult Ovaries</a>. Molecular Cell.</p></li>
+<li><p>Beatty et al. 2017. <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/28237889">Giardia duodenalis induces pathogenic dysbiosis of human intestinal microbiota biofilms</a>. International Journal for Parasitology.</p></li>
+<li><p>Meyer et al. 2017. <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5400397/">Differential Gene Expression in the Human Brain Is Associated with Conserved, but Not Accelerated, Noncoding Sequences</a>. Molecular Biology and Evolution.</p></li>
+<li><p>Lonardo et al. 2017. <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0038071716304539">Priming of soil organic matter: Chemical structure of added compounds is more important than the energy content</a>. Soil Biology and Biochemistry.</p></li>
+<li><p>Beisser et al. 2017. <a class="reference external" href="https://peerj.com/articles/2832/">Comprehensive transcriptome analysis provides new insights into nutritional strategies and phylogenetic relationships of chrysophytes</a>. PeerJ.</p></li>
+<li><p>Piro et al 2017. <a class="reference external" href="https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-017-0318-y">MetaMeta: integrating metagenome analysis tools to improve taxonomic profiling</a>. Microbiome.</p></li>
+<li><p>Dimitrov et al 2017. <a class="reference external" href="https://peerj.com/articles/2915/">Successive DNA extractions improve characterization of soil microbial communities</a>. PeerJ.</p></li>
+<li><p>de Bourcy et al. 2016. <a class="reference external" href="https://www.pnas.org/content/114/5/1105.short">Phylogenetic analysis of the human antibody repertoire reveals quantitative signatures of immune senescence and aging</a>. PNAS.</p></li>
+<li><p>Bray et al. 2016. <a class="reference external" href="https://www.nature.com/nbt/journal/v34/n5/abs/nbt.3519.html">Near-optimal probabilistic RNA-seq quantification</a>. Nature Biotechnology.</p></li>
+<li><p>Etournay et al. 2016. <a class="reference external" href="https://elifesciences.org/content/5/e14334">TissueMiner: a multiscale analysis toolkit to quantify how cellular processes create tissue dynamics</a>. eLife Sciences.</p></li>
+<li><p>Townsend et al. 2016. <a class="reference external" href="https://www.cell.com/cancer-cell/abstract/S1535-6108%2816%2930090-3">The Public Repository of Xenografts Enables Discovery and Randomized Phase II-like Trials in Mice</a>. Cancer Cell.</p></li>
+<li><p>Burrows et al. 2016. <a class="reference external" href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005793">Genetic Variation, Not Cell Type of Origin, Underlies the Majority of Identifiable Regulatory Differences in iPSCs</a>. PLOS Genetics.</p></li>
+<li><p>Ziller et al. 2015. <a class="reference external" href="https://www.nature.com/nmeth/journal/v12/n3/full/nmeth.3152.html">Coverage recommendations for methylation analysis by whole-genome bisulfite sequencing</a>. Nature Methods.</p></li>
+<li><p>Li et al. 2015. <a class="reference external" href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0843-6">Quality control, modeling, and visualization of CRISPR screens with MAGeCK-VISPR</a>. Genome Biology.</p></li>
+<li><p>Schmied et al. 2015. <a class="reference external" href="https://bioinformatics.oxfordjournals.org/content/32/7/1112">An automated workflow for parallel processing of large multiview SPIM recordings</a>. Bioinformatics.</p></li>
+<li><p>Chung et al. 2015. <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/humu.22814/full">Whole-Genome Sequencing and Integrative Genomic Analysis Approach on Two 22q11.2 Deletion Syndrome Family Trios for Genotype to Phenotype Correlations</a>. Human Mutation.</p></li>
+<li><p>Kim et al. 2015. <a class="reference external" href="https://emboj.embopress.org/content/34/13/1801.long">TUT7 controls the fate of precursor microRNAs by using three different uridylation mechanisms</a>. The EMBO Journal.</p></li>
+<li><p>Park et al. 2015. <a class="reference external" href="https://doi.org/10.1016/j.cell.2015.06.007">Ebola Virus Epidemiology, Transmission, and Evolution during Seven Months in Sierra Leone</a>. Cell.</p></li>
+<li><p>Břinda et al. 2015. <a class="reference external" href="https://bioinformatics.oxfordjournals.org/content/early/2015/09/30/bioinformatics.btv524">RNF: a general framework to evaluate NGS read mappers</a>. Bioinformatics.</p></li>
+<li><p>Břinda et al. 2015. <a class="reference external" href="https://bioinformatics.oxfordjournals.org/content/early/2015/08/10/bioinformatics.btv419">Spaced seeds improve k-mer-based metagenomic classification</a>. Bioinformatics.</p></li>
+<li><p>Spjuth et al. 2015. <a class="reference external" href="https://biologydirect.biomedcentral.com/articles/10.1186/s13062-015-0071-8">Experiences with workflows for automating data-intensive bioinformatics</a>. Biology Direct.</p></li>
+<li><p>Schramm et al. 2015. <a class="reference external" href="https://www.nature.com/ng/journal/v47/n8/full/ng.3349.html">Mutational dynamics between primary and relapse neuroblastomas</a>. Nature Genetics.</p></li>
+<li><p>Berulava et al. 2015. <a class="reference external" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0118438">N6-Adenosine Methylation in MiRNAs</a>. PLOS ONE.</p></li>
+<li><p>The Genome of the Netherlands Consortium 2014. <a class="reference external" href="https://www.nature.com/ng/journal/v46/n8/full/ng.3021.html">Whole-genome sequence variation, population structure and demographic history of the Dutch population</a>. Nature Genetics.</p></li>
+<li><p>Patterson et al. 2014. <a class="reference external" href="https://online.liebertpub.com/doi/10.1089/cmb.2014.0157">WhatsHap: Haplotype Assembly for Future-Generation Sequencing Reads</a>. Journal of Computational Biology.</p></li>
+<li><p>Fernández et al. 2014. <a class="reference external" href="https://genome.cshlp.org/content/25/1/27.long">H3K4me1 marks DNA regions hypomethylated during aging in human stem and differentiated cells</a>. Genome Research.</p></li>
+<li><p>Köster et al. 2014. <a class="reference external" href="https://peerj.com/articles/606/">Massively parallel read mapping on GPUs with the q-group index and PEANUT</a>. PeerJ.</p></li>
+<li><p>Chang et al. 2014. <a class="reference external" href="https://www.cell.com/molecular-cell/abstract/S1097-2765(14)00121-X">TAIL-seq: Genome-wide Determination of Poly(A) Tail Length and 3′ End Modifications</a>. Molecular Cell.</p></li>
+<li><p>Althoff et al. 2013. <a class="reference external" href="https://onlinelibrary.wiley.com/doi/10.1002/ijc.28091/abstract;jsessionid=33613A834E2A2FDCCA49246C23DF777E.f04t02">MiR-137 functions as a tumor suppressor in neuroblastoma by downregulating KDM1A</a>. International Journal of Cancer.</p></li>
+<li><p>Marschall et al. 2013. <a class="reference external" href="https://bioinformatics.oxfordjournals.org/content/29/24/3143.long">MATE-CLEVER: Mendelian-Inheritance-Aware Discovery and Genotyping of Midsize and Long Indels</a>. Bioinformatics.</p></li>
+<li><p>Rahmann et al. 2013. <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S1046202312002605">Identifying transcriptional miRNA biomarkers by integrating high-throughput sequencing and real-time PCR data</a>. Methods.</p></li>
+<li><p>Martin et al. 2013. <a class="reference external" href="https://www.nature.com/ng/journal/v45/n8/full/ng.2674.html">Exome sequencing identifies recurrent somatic mutations in EIF1AX and SF3B1 in uveal melanoma with disomy 3</a>. Nature Genetics.</p></li>
+<li><p>Czeschik et al. 2013. <a class="reference external" href="https://link.springer.com/article/10.1007%2Fs00439-013-1295-2">Clinical and mutation data in 12 patients with the clinical diagnosis of Nager syndrome</a>. Human Genetics.</p></li>
+<li><p>Marschall et al. 2012. <a class="reference external" href="https://bioinformatics.oxfordjournals.org/content/28/22/2875.long">CLEVER: Clique-Enumerating Variant Finder</a>. Bioinformatics.</p></li>
+</ul>
+<div class="toctree-wrapper compound" id="id1">
+</div>
+<div class="toctree-wrapper compound" id="execution">
+</div>
+<div class="toctree-wrapper compound" id="snakefiles">
+</div>
+<div class="toctree-wrapper compound" id="api-reference">
+</div>
+<div class="toctree-wrapper compound" id="project-info">
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">testing-sphinx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, anza.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
