@@ -1,7 +1,7 @@
 .. _manual-main:
 
 =========
-Snakemake
+Snakemakeanza testing
 =========
 
 .. image:: https://img.shields.io/conda/dn/bioconda/snakemake.svg?label=Bioconda
